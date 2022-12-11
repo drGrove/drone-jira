@@ -14,15 +14,20 @@ import (
 // the commit details, including the commit message,
 // branch and pull request title.
 func extractIssue(args Args) string {
-	return regexp.MustCompile(args.Project + "\\-\\d+").FindString(
-		fmt.Sprintln(
-			args.Commit.Message,
-			args.PullRequest.Title,
-			args.Commit.Source,
-			args.Commit.Target,
-			args.Commit.Branch,
-		),
-	)
+  for _, project := range strings.Split(args.Project, ",") {
+    if found := regexp.MustCompile(project + "\\-\\d+").FindString(
+      fmt.Sprintln(
+        args.Commit.Message,
+        args.PullRequest.Title,
+        args.Commit.Source,
+        args.Commit.Target,
+        args.Commit.Branch,
+      ),
+    ); found != "" {
+      return found
+    }
+  }
+  return ""
 }
 
 // helper function determines the pipeline state.

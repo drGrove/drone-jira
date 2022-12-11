@@ -45,3 +45,27 @@ func TestExtractIssue(t *testing.T) {
 		}
 	}
 }
+
+func TestExtractIssueMultiProject(t *testing.T) {
+  tests := []struct {
+    text string
+    want string
+  }{
+    {
+      text: "TEST-1 this is a test",
+      want: "TEST-1",
+    },
+    {
+      text: "PROJ-1 this is a test",
+      want: "PROJ-1",
+    },
+  }
+  for _, test := range tests {
+    var args Args
+		args.Commit.Message = test.text
+    args.Project = "TEST,PROJ"
+    if got, want := extractIssue(args), test.want; got != want {
+      t.Errorf("Got issue number %v, want %v", got, want)
+    }
+  }
+}
